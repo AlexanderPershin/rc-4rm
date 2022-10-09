@@ -1,14 +1,21 @@
 import classNames from "classnames";
 import React, { FC, useState, useEffect } from "react";
-import checkForEmpty from "../../utils/checkForEmpty";
-import { emailValidator, passwordValidator } from "../../utils/validators";
+import checkForEmpty from "../utils/checkForEmpty";
+import { emailValidator, passwordValidator } from "../utils/validators";
+import cn from "classnames";
+import s from "./style.module.sass";
 
-interface SignInProps {
+interface SignProps {
     handleSubmit: (data: any) => void;
     clearAfter: boolean;
+    className?: string;
 }
 
-const SignIn: FC<SignInProps> = ({ handleSubmit, clearAfter = false }) => {
+const SignForm: FC<SignProps> = ({
+    handleSubmit,
+    clearAfter = false,
+    className,
+}) => {
     const INIT_DATA = {
         email: "",
         password: "",
@@ -106,7 +113,7 @@ const SignIn: FC<SignInProps> = ({ handleSubmit, clearAfter = false }) => {
     }, [errors]);
 
     return (
-        <form onSubmit={onFormSubmit}>
+        <form onSubmit={onFormSubmit} className={cn(s.SignForm, className)}>
             <div className="mb-3">
                 <label htmlFor="exampleInputEmail1" className="form-label">
                     Email address
@@ -189,4 +196,4 @@ const SignIn: FC<SignInProps> = ({ handleSubmit, clearAfter = false }) => {
     );
 };
 
-export default SignIn;
+export default SignForm;

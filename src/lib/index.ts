@@ -1,1 +1,8 @@
-export { default as SignForm } from "./SignForm";
+import SignForm from "./SignForm";
+
+const returnLibrary = () => {
+    return {
+        SignForm,
+    };
+};
+export default returnLibrary();

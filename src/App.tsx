@@ -1,5 +1,5 @@
 import React from "react";
-import { SignForm } from "./lib";
+import SignForm from "./lib/SignForm";
 
 function App() {
     const handleSignIn = (data: any) => {
