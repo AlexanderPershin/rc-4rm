@@ -96,6 +96,6 @@ return (
 
 </details>
 
-## LICENSE [MIT](LICENSE)
+## LICENSE [MIT](https://github.com/AlexanderPershin/rc-4rm/blob/master/LICENCE.md)
 
 Copyright (c) 2022 Alexander Pershin
