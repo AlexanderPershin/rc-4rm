@@ -39,12 +39,18 @@ return (
 
 ### API
 
-| prop          | type           | Description                                                                          |
-| ------------- | -------------- | ------------------------------------------------------------------------------------ |
-| handleSubmit  | (data) => void | callback function triggered on `onSubmit`, sends `data` object `{ email, password }` |
-| clearAfter    | boolean        | should form fields be set to empty string after promise resolved                     |
-| isConfirmPass | boolean        | confirm password input for signing up                                                |
-| isCheck       | boolean        | check me out checkbox                                                                |
+#### `SignForm`
+
+| prop            | type                                    | Description                                                                          |
+| --------------- | --------------------------------------- | ------------------------------------------------------------------------------------ |
+| handleSubmit    | (data) => void                          | callback function triggered on `onSubmit`, sends `data` object `{ email, password }` |
+| clearAfter      | boolean                                 | should form fields be set to empty string after promise resolved                     |
+| isConfirmPass   | boolean                                 | confirm password input for signing up                                                |
+| isCheck         | boolean                                 | check me out checkbox                                                                |
+| labels          | {"email": "Enter email", ...}           | object with labels for inputs                                                        |
+| info            | {"email": "Should be valid email", ...} | object with information for inputs                                                   |
+| successFeedback | {"email": "Email is valid", ...}        | object with success feedback for inputs validation                                   |
+| errorFeedback   | {"email": "Email is invalid", ...}      | object with error feedback for inputs validation                                     |
 
 ## LICENSE [MIT](LICENSE)
 

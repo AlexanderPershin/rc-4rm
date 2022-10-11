@@ -25,6 +25,23 @@ function App() {
                             password2: "Repeat password",
                             isCheckOut: "Remember me",
                         }}
+                        info={{
+                            email: "We'll never share your email with anyone else",
+                            password:
+                                "Should contain letters, uppercase letters, numbers and symbols",
+                            password2: "Enter your password again",
+                            isCheckOut: "Increase authentication validity time",
+                        }}
+                        successFeedback={{
+                            email: "Email is valid",
+                            password: "Password is valid",
+                            password2: "Passwords match",
+                        }}
+                        errorFeedback={{
+                            email: "Email is invalid",
+                            password: "Password is invalid",
+                            password2: "Passwords don't match",
+                        }}
                     />
                 </div>
             </div>

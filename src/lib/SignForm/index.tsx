@@ -17,6 +17,24 @@ interface SignProps {
         password2?: string;
         isCheckOut?: string;
     };
+    info?: {
+        email?: string;
+        password?: string;
+        password2?: string;
+        isCheckOut?: string;
+    };
+    successFeedback?: {
+        email?: string;
+        password?: string;
+        password2?: string;
+        isCheckOut?: string;
+    };
+    errorFeedback?: {
+        email?: string;
+        password?: string;
+        password2?: string;
+        isCheckOut?: string;
+    };
 }
 
 const SignForm: FC<SignProps> = ({
@@ -26,6 +44,9 @@ const SignForm: FC<SignProps> = ({
     isCheck,
     isConfirmPass,
     labels,
+    info,
+    successFeedback,
+    errorFeedback,
 }) => {
     const INIT_DATA = {
         email: "",
@@ -131,10 +152,12 @@ const SignForm: FC<SignProps> = ({
         const submitData: {
             email: string;
             password: string;
+            password2?: string;
         } = {
             email: formData.email,
             password: formData.password,
         };
+        if (isConfirmPass) submitData.password2 = formData.password2;
         const anyEmpty = checkForEmpty(submitData);
         if (errors.length || anyEmpty) return true;
         return false;
@@ -147,16 +170,51 @@ const SignForm: FC<SignProps> = ({
         return isValid ? "is-valid" : "is-invalid";
     };
 
-    type FieldType = keyof typeof formData;
-    const renderLabel = (fieldName: FieldType, defaultValue: string) => {
+    const renderLabel = (fieldName: FormDataTypes, defaultValue: string) => {
         if (labels?.[fieldName]) return labels[fieldName];
         return defaultValue;
+    };
+
+    const renderInfo = (fieldName: FormDataTypes) => {
+        if (info?.[fieldName])
+            return (
+                <div id={`${fieldName}Help`} className="form-text">
+                    {info[fieldName]}
+                </div>
+            );
+        return null;
+    };
+
+    const renderSuccessFeedback = (
+        fieldName: FormDataTypes,
+        defaultValue: string
+    ) => {
+        return (
+            <div className="valid-feedback">
+                {successFeedback?.[fieldName]
+                    ? successFeedback[fieldName]
+                    : defaultValue}
+            </div>
+        );
+    };
+
+    const renderErrorFeedback = (
+        fieldName: FormDataTypes,
+        defaultValue: string
+    ) => {
+        return (
+            <div className="invalid-feedback">
+                {errorFeedback?.[fieldName]
+                    ? errorFeedback[fieldName]
+                    : defaultValue}
+            </div>
+        );
     };
 
     return (
         <form onSubmit={onFormSubmit} className={cn(s.SignForm, className)}>
             <div className="mb-3">
-                <label htmlFor="exampleInputEmail1" className="form-label">
+                <label htmlFor="email" className="form-label">
                     {renderLabel("email", "Email")}
                 </label>
                 <input
@@ -174,18 +232,16 @@ const SignForm: FC<SignProps> = ({
                 />
                 {formData.email ? (
                     <>
-                        <div className="valid-feedback">Looks good</div>
-                        <div className="invalid-feedback">Email is invalid</div>
+                        {renderSuccessFeedback("email", "Looks good")}
+                        {renderErrorFeedback("email", "Not an email")}
                     </>
                 ) : (
-                    <div id="emailHelp" className="form-text">
-                        We'll never share your email with anyone else.
-                    </div>
+                    renderInfo("email")
                 )}
             </div>
 
             <div className="mb-3">
-                <label htmlFor="exampleInputPassword1" className="form-label">
+                <label htmlFor="password" className="form-label">
                     {renderLabel("password", "Password")}
                 </label>
                 <input
@@ -202,25 +258,17 @@ const SignForm: FC<SignProps> = ({
                 />
                 {formData.password ? (
                     <>
-                        <div className="valid-feedback">Looks good</div>
-                        <div className="invalid-feedback">
-                            Password is invalid
-                        </div>
+                        {renderSuccessFeedback("password", "Looks good")}
+                        {renderErrorFeedback("password", "Password is invalid")}
                     </>
                 ) : (
-                    <div id="emailHelp" className="form-text">
-                        Should contain letters, uppercase letters, numbers and
-                        symbols
-                    </div>
+                    renderInfo("password")
                 )}
             </div>
 
             {isConfirmPass ? (
                 <div className="mb-3">
-                    <label
-                        htmlFor="exampleInputPassword1"
-                        className="form-label"
-                    >
+                    <label htmlFor="password2" className="form-label">
                         {renderLabel("password2", "Confirm password")}
                     </label>
                     <input
@@ -237,12 +285,14 @@ const SignForm: FC<SignProps> = ({
                     />
                     {formData.password ? (
                         <>
-                            <div className="valid-feedback">Confirmed</div>
-                            <div className="invalid-feedback">
-                                Passwords don't match
-                            </div>
+                            {renderSuccessFeedback("password2", "Confirmed")}
+                            {renderErrorFeedback(
+                                "password2",
+                                "Passwords don't match"
+                            )}
                         </>
                     ) : null}
+                    {renderInfo("password2")}
                 </div>
             ) : null}
 
@@ -258,6 +308,7 @@ const SignForm: FC<SignProps> = ({
                     <label className="form-check-label" htmlFor="isCheckOut">
                         {renderLabel("isCheckOut", "Check me out")}
                     </label>
+                    {renderInfo("isCheckOut")}
                 </div>
             ) : null}
 
