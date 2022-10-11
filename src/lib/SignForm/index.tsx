@@ -9,16 +9,22 @@ interface SignProps {
     handleSubmit: (data: any) => void;
     clearAfter: boolean;
     className?: string;
+    isCheck?: boolean;
+    isConfirmPass?: boolean;
 }
 
 const SignForm: FC<SignProps> = ({
     handleSubmit,
     clearAfter = false,
     className,
+    isCheck,
+    isConfirmPass,
 }) => {
     const INIT_DATA = {
         email: "",
         password: "",
+        password2: "",
+        isCheckOut: false,
     };
 
     const [formData, setFormData] = useState(INIT_DATA);
@@ -44,6 +50,8 @@ const SignForm: FC<SignProps> = ({
     const formValidators = {
         email: emailValidator,
         password: passwordValidator,
+        password2: (value: string) => value === formData.password,
+        checkOut: () => true,
     };
 
     const validateField = (fieldName: string, value: string | any) => {
@@ -70,6 +78,12 @@ const SignForm: FC<SignProps> = ({
         validateField(fieldName, value);
         setFormData(newFormData);
     };
+    const handleCheckboxField = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const fieldName = e.target.name;
+        const prevValue: boolean = formData[fieldName as "isCheckOut"];
+        const newFormData = { ...formData, [fieldName]: !prevValue };
+        setFormData(newFormData);
+    };
 
     const submitAsync = async (data: any) => {
         setLoading(true);
@@ -80,7 +94,18 @@ const SignForm: FC<SignProps> = ({
 
     const onFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const anyEmpty = checkForEmpty(formData);
+        const submitData: {
+            email: string;
+            password: string;
+            isCheckout?: boolean;
+        } = {
+            email: formData.email,
+            password: formData.password,
+        };
+
+        const anyEmpty = checkForEmpty(submitData);
+
+        if (isCheck) submitData.isCheckout = formData.isCheckOut;
 
         if (errors?.length || anyEmpty) {
             console.log(
@@ -92,11 +117,18 @@ const SignForm: FC<SignProps> = ({
             setErrors([]);
         }
 
-        submitAsync(formData);
+        submitAsync(submitData);
     };
 
     const checkIfDisableSubmit = () => {
-        const anyEmpty = checkForEmpty(formData);
+        const submitData: {
+            email: string;
+            password: string;
+        } = {
+            email: formData.email,
+            password: formData.password,
+        };
+        const anyEmpty = checkForEmpty(submitData);
         if (errors.length || anyEmpty) return true;
         return false;
     };
@@ -173,6 +205,52 @@ const SignForm: FC<SignProps> = ({
                     </div>
                 )}
             </div>
+
+            {isConfirmPass ? (
+                <div className="mb-3">
+                    <label
+                        htmlFor="exampleInputPassword1"
+                        className="form-label"
+                    >
+                        Confirm password
+                    </label>
+                    <input
+                        type="password"
+                        className={classNames(
+                            "form-control",
+                            getValidationClasses("password2")
+                        )}
+                        id="password2"
+                        name="password2"
+                        value={formData.password2}
+                        onChange={handleFormField}
+                        placeholder="Repeat password"
+                    />
+                    {formData.password ? (
+                        <>
+                            <div className="valid-feedback">Confirmed</div>
+                            <div className="invalid-feedback">
+                                Passwords don't match
+                            </div>
+                        </>
+                    ) : null}
+                </div>
+            ) : null}
+
+            {isCheck ? (
+                <div className="mb-3 form-check">
+                    <input
+                        type="checkbox"
+                        className="form-check-input"
+                        id="isCheckOut"
+                        name="isCheckOut"
+                        onChange={handleCheckboxField}
+                    />
+                    <label className="form-check-label" htmlFor="isCheckOut">
+                        Remember me
+                    </label>
+                </div>
+            ) : null}
 
             {isLoading ? (
                 <button className="btn btn-primary" type="button" disabled>

@@ -14,7 +14,12 @@ function App() {
             <h1>React rc-4rm (Forms for react) library</h1>
             <div className="row">
                 <div className="col-12 col-md-6">
-                    <SignForm handleSubmit={handleSignIn} clearAfter={true} />
+                    <SignForm
+                        handleSubmit={handleSignIn}
+                        clearAfter={false}
+                        isConfirmPass={true}
+                        isCheck={true}
+                    />
                 </div>
             </div>
         </div>
