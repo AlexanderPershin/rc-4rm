@@ -19,6 +19,12 @@ function App() {
                         clearAfter={false}
                         isConfirmPass={true}
                         isCheck={true}
+                        validators={{
+                            email: (value: string) =>
+                                /\S+@\S+\.\S+/.test(value),
+                            password: (value: string) => value.length > 6,
+                            isCheckOut: (value: boolean) => value,
+                        }}
                         labels={{
                             email: "Enter your email",
                             password: "Create a password",

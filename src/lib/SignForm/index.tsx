@@ -35,6 +35,12 @@ interface SignProps {
         password2?: string;
         isCheckOut?: string;
     };
+    validators?: {
+        email?: (value: string) => boolean;
+        password?: (value: string) => boolean;
+        password2?: (value: string) => boolean;
+        isCheckOut?: (value: boolean) => boolean;
+    };
 }
 
 const SignForm: FC<SignProps> = ({
@@ -47,6 +53,7 @@ const SignForm: FC<SignProps> = ({
     info,
     successFeedback,
     errorFeedback,
+    validators,
 }) => {
     const INIT_DATA = {
         email: "",
@@ -63,53 +70,85 @@ const SignForm: FC<SignProps> = ({
 
     const [errors, setErrors] = useState<string[]>([]);
 
-    const addToErrors = (fieldName: string) => {
+    const addToErrors = (fieldName: FormDataTypes) => {
         const inErrors = errors.includes(fieldName);
         if (inErrors) return;
         const newErrors = [...errors, fieldName];
         setErrors(newErrors);
     };
 
-    const removeFromErrors = (fieldName: string) => {
+    const removeFromErrors = (fieldName: FormDataTypes) => {
         const newErrors = errors.filter((item) => item !== fieldName);
         setErrors(newErrors);
     };
 
-    const formValidators = {
+    const defaultFormValidators: any = {
         email: emailValidator,
         password: passwordValidator,
         password2: (value: string) => value === formData.password,
-        checkOut: () => true,
+        isCheckOut: (value: boolean) => true,
     };
 
-    const validateField = (fieldName: string, value: string | any) => {
+    const formValidators: any = {
+        ...defaultFormValidators,
+        ...validators,
+    };
+
+    const validateField = <T extends keyof FormData>(
+        fieldName: T,
+        value: FormData[T]
+    ) => {
         if (!value) {
-            removeFromErrors(fieldName);
+            removeFromErrors(fieldName as FormDataTypes);
             return;
         }
-        const isValid =
-            formValidators[fieldName as "email" | "password"](value);
+        const isValid = formValidators[fieldName as FormDataTypes](value);
         if (isValid) {
-            removeFromErrors(fieldName);
+            removeFromErrors(fieldName as FormDataTypes);
             return;
         }
         if (!isValid) {
-            addToErrors(fieldName);
+            addToErrors(fieldName as FormDataTypes);
             return;
         }
     };
 
-    const handleFormField = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const fieldName = e.target.name;
-        const value = e.target.value;
+    const validateCheckboxField = <T extends keyof FormData>(
+        fieldName: T,
+        value: FormData[T]
+    ) => {
+        console.log("validating checkbox field");
+
+        const isValid = formValidators[fieldName as FormDataTypes](value);
+        console.log("isValid", isValid);
+
+        if (isValid) {
+            removeFromErrors(fieldName as FormDataTypes);
+            return isValid;
+        }
+        if (!isValid) {
+            addToErrors(fieldName as FormDataTypes);
+            return isValid;
+        }
+    };
+
+    const handleFormField = <T extends keyof FormData>(
+        e: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        const fieldName = e.target.name as T;
+        const value = e.target.value as any;
         const newFormData = { ...formData, [fieldName]: value };
         validateField(fieldName, value);
         setFormData(newFormData);
     };
-    const handleCheckboxField = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const fieldName = e.target.name;
+
+    const handleCheckboxField = <T extends keyof FormData>(
+        e: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        const fieldName = e.target.name as T;
         const prevValue: boolean = formData[fieldName as "isCheckOut"];
         const newFormData = { ...formData, [fieldName]: !prevValue };
+        validateCheckboxField(fieldName, !prevValue as any);
         setFormData(newFormData);
     };
 
@@ -132,6 +171,15 @@ const SignForm: FC<SignProps> = ({
         };
 
         const anyEmpty = checkForEmpty(submitData);
+
+        const isCheckValid: boolean = validateCheckboxField(
+            "isCheckOut" as any,
+            formData.isCheckOut
+        );
+        if (!isCheckValid) {
+            addToErrors("isCheckOut");
+            return;
+        }
 
         if (isCheck) submitData.isCheckout = formData.isCheckOut;
 
@@ -163,10 +211,24 @@ const SignForm: FC<SignProps> = ({
         return false;
     };
 
-    const getValidationClasses = (fieldName: string) => {
-        if (!formData[fieldName as FormDataTypes]) return "";
-        const isValid =
-            !errors.includes(fieldName) && formData[fieldName as FormDataTypes];
+    const getValidationClasses = (
+        fieldName: FormDataTypes,
+        isCheckbox?: boolean
+    ) => {
+        if (!formData[fieldName as FormDataTypes] && !isCheckbox) return "";
+        let isValid: boolean = false;
+        if (!isCheckbox) {
+            isValid = (!errors.includes(fieldName) &&
+                formData[fieldName as FormDataTypes]) as boolean;
+        } else {
+            if (validators?.[fieldName]) {
+                isValid = !errors.includes(fieldName);
+                if (!isValid) return "is-invalid";
+                return "";
+            } else {
+                return "";
+            }
+        }
         return isValid ? "is-valid" : "is-invalid";
     };
 
@@ -211,6 +273,10 @@ const SignForm: FC<SignProps> = ({
         );
     };
 
+    useEffect(() => {
+        console.log("errors", errors);
+    }, [errors]);
+
     return (
         <form onSubmit={onFormSubmit} className={cn(s.SignForm, className)}>
             <div className="mb-3">
@@ -218,7 +284,7 @@ const SignForm: FC<SignProps> = ({
                     {renderLabel("email", "Email")}
                 </label>
                 <input
-                    type="email"
+                    type="text"
                     className={classNames(
                         "form-control",
                         getValidationClasses("email")
@@ -300,7 +366,10 @@ const SignForm: FC<SignProps> = ({
                 <div className="mb-3 form-check">
                     <input
                         type="checkbox"
-                        className="form-check-input"
+                        className={cn(
+                            "form-check-input",
+                            getValidationClasses("isCheckOut", true)
+                        )}
                         id="isCheckOut"
                         name="isCheckOut"
                         onChange={handleCheckboxField}
@@ -308,7 +377,11 @@ const SignForm: FC<SignProps> = ({
                     <label className="form-check-label" htmlFor="isCheckOut">
                         {renderLabel("isCheckOut", "Check me out")}
                     </label>
-                    {renderInfo("isCheckOut")}
+                    <>
+                        {renderSuccessFeedback("isCheckOut", "Looks good")}
+                        {renderErrorFeedback("isCheckOut", "You must agree")}
+                    </>
+                    {!formData.isCheckOut ? renderInfo("isCheckOut") : null}
                 </div>
             ) : null}
 
