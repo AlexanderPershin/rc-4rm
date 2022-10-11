@@ -247,7 +247,7 @@ const SignForm: FC<SignProps> = ({
                         onChange={handleCheckboxField}
                     />
                     <label className="form-check-label" htmlFor="isCheckOut">
-                        Remember me
+                        Check me out
                     </label>
                 </div>
             ) : null}
