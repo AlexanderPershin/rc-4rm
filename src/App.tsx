@@ -19,6 +19,12 @@ function App() {
                         clearAfter={false}
                         isConfirmPass={true}
                         isCheck={true}
+                        labels={{
+                            email: "Enter your email",
+                            password: "Create a password",
+                            password2: "Repeat password",
+                            isCheckOut: "Remember me",
+                        }}
                     />
                 </div>
             </div>

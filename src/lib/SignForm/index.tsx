@@ -11,6 +11,12 @@ interface SignProps {
     className?: string;
     isCheck?: boolean;
     isConfirmPass?: boolean;
+    labels?: {
+        email?: string;
+        password?: string;
+        password2?: string;
+        isCheckOut?: string;
+    };
 }
 
 const SignForm: FC<SignProps> = ({
@@ -19,6 +25,7 @@ const SignForm: FC<SignProps> = ({
     className,
     isCheck,
     isConfirmPass,
+    labels,
 }) => {
     const INIT_DATA = {
         email: "",
@@ -140,15 +147,17 @@ const SignForm: FC<SignProps> = ({
         return isValid ? "is-valid" : "is-invalid";
     };
 
-    useEffect(() => {
-        console.log("errors", errors);
-    }, [errors]);
+    type FieldType = keyof typeof formData;
+    const renderLabel = (fieldName: FieldType, defaultValue: string) => {
+        if (labels?.[fieldName]) return labels[fieldName];
+        return defaultValue;
+    };
 
     return (
         <form onSubmit={onFormSubmit} className={cn(s.SignForm, className)}>
             <div className="mb-3">
                 <label htmlFor="exampleInputEmail1" className="form-label">
-                    Email address
+                    {renderLabel("email", "Email")}
                 </label>
                 <input
                     type="email"
@@ -177,7 +186,7 @@ const SignForm: FC<SignProps> = ({
 
             <div className="mb-3">
                 <label htmlFor="exampleInputPassword1" className="form-label">
-                    Password
+                    {renderLabel("password", "Password")}
                 </label>
                 <input
                     type="password"
@@ -212,7 +221,7 @@ const SignForm: FC<SignProps> = ({
                         htmlFor="exampleInputPassword1"
                         className="form-label"
                     >
-                        Confirm password
+                        {renderLabel("password2", "Confirm password")}
                     </label>
                     <input
                         type="password"
@@ -247,7 +256,7 @@ const SignForm: FC<SignProps> = ({
                         onChange={handleCheckboxField}
                     />
                     <label className="form-check-label" htmlFor="isCheckOut">
-                        Check me out
+                        {renderLabel("isCheckOut", "Check me out")}
                     </label>
                 </div>
             ) : null}
