@@ -176,7 +176,7 @@ const SignForm: FC<SignProps> = ({
             "isCheckOut" as any,
             formData.isCheckOut
         );
-        if (!isCheckValid) {
+        if (!isCheckValid && isCheck) {
             addToErrors("isCheckOut");
             return;
         }

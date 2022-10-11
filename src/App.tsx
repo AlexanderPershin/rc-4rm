@@ -47,6 +47,7 @@ function App() {
                             email: "Email is invalid",
                             password: "Password is invalid",
                             password2: "Passwords don't match",
+                            isCheckOut: "You must agree",
                         }}
                     />
                 </div>
