@@ -14,7 +14,7 @@ or
 npm install rc-4rm
 ```
 
-### Usage (currently only sign in form added, planned more)
+### Usage
 
 ```js
 import { SignForm } from "rc-4rm";
@@ -41,7 +41,7 @@ return (
 
 #### `SignForm`
 
-| prop            | type                                                          | Description                                                                          |
+| prop            | type                                                          | description                                                                          |
 | --------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
 | handleSubmit    | (data) => void                                                | callback function triggered on `onSubmit`, sends `data` object `{ email, password }` |
 | className       | string                                                        | class added to bootstrap form classes                                                |
@@ -96,6 +96,26 @@ return (
 ```
 
 </details>
+
+#### `CustomForm`, currently supported only the following field types: text, email, password
+
+| prop         | type                                                                                                                                                                      | description                                                                          |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| handleSubmit | (data) => void                                                                                                                                                            | callback function triggered on `onSubmit`, sends `data` object `{ email, password }` |
+| className    | string                                                                                                                                                                    | class added to bootstrap form classes                                                |
+| clearAfter   | boolean                                                                                                                                                                   | should form fields be set to empty string after promise resolved                     |
+| fields       | Array of CustomFormField objects { id: number; type: string; name: string; label: string; validator: (value: any) => boolean; placeholder?: string; required?: boolean; } | should form fields be set to empty string after promise resolved                     |
+
+### `CustomForm` usage
+
+```js
+<CustomForm
+    handleSubmit={handleSubmit}
+    fields={CUSTOM_FORM_FIELDS_DATA}
+    clearAfter={true}
+    className="w-50"
+/>
+```
 
 ## LICENSE [MIT](https://github.com/AlexanderPershin/rc-4rm/blob/master/LICENCE.md)
 
