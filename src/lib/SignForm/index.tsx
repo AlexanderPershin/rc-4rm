@@ -274,10 +274,6 @@ const SignForm: FC<SignProps> = ({
         );
     };
 
-    useEffect(() => {
-        console.log("errors", errors);
-    }, [errors]);
-
     return (
         <form onSubmit={onFormSubmit} className={cn(s.SignForm, className)}>
             <div className="mb-3">

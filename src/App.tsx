@@ -22,7 +22,7 @@ function App() {
                         validators={{
                             email: (value: string) =>
                                 /\S+@\S+\.\S+/.test(value),
-                            password: (value: string) => value.length > 6,
+                            // password: (value: string) => value.length > 6,
                             isCheckOut: (value: boolean) => value,
                         }}
                         labels={{
