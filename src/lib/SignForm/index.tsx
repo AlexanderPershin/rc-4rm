@@ -62,11 +62,12 @@ const SignForm: FC<SignProps> = ({
         isCheckOut: false,
     };
 
-    const [formData, setFormData] = useState(INIT_DATA);
+    type FormDataType = typeof INIT_DATA;
+    type FormDataTypes = keyof typeof INIT_DATA;
+
+    const [formData, setFormData] = useState<FormDataType>(INIT_DATA);
 
     const [isLoading, setLoading] = useState<boolean>(false);
-
-    type FormDataTypes = keyof typeof formData;
 
     const [errors, setErrors] = useState<string[]>([]);
 
@@ -94,45 +95,45 @@ const SignForm: FC<SignProps> = ({
         ...validators,
     };
 
-    const validateField = <T extends keyof FormData>(
+    const validateField = <T extends keyof FormDataType>(
         fieldName: T,
-        value: FormData[T]
+        value: FormDataType[T]
     ) => {
         if (!value) {
-            removeFromErrors(fieldName as FormDataTypes);
+            removeFromErrors(fieldName);
             return;
         }
-        const isValid = formValidators[fieldName as FormDataTypes](value);
+        const isValid = formValidators[fieldName](value);
         if (isValid) {
-            removeFromErrors(fieldName as FormDataTypes);
+            removeFromErrors(fieldName);
             return;
         }
         if (!isValid) {
-            addToErrors(fieldName as FormDataTypes);
+            addToErrors(fieldName);
             return;
         }
     };
 
-    const validateCheckboxField = <T extends keyof FormData>(
+    const validateCheckboxField = <T extends keyof FormDataType>(
         fieldName: T,
-        value: FormData[T]
+        value: FormDataType[T]
     ) => {
         console.log("validating checkbox field");
 
-        const isValid = formValidators[fieldName as FormDataTypes](value);
+        const isValid = formValidators[fieldName](value);
         console.log("isValid", isValid);
 
         if (isValid) {
-            removeFromErrors(fieldName as FormDataTypes);
+            removeFromErrors(fieldName);
             return isValid;
         }
         if (!isValid) {
-            addToErrors(fieldName as FormDataTypes);
+            addToErrors(fieldName);
             return isValid;
         }
     };
 
-    const handleFormField = <T extends keyof FormData>(
+    const handleFormField = <T extends keyof FormDataType>(
         e: React.ChangeEvent<HTMLInputElement>
     ) => {
         const fieldName = e.target.name as T;
@@ -142,7 +143,7 @@ const SignForm: FC<SignProps> = ({
         setFormData(newFormData);
     };
 
-    const handleCheckboxField = <T extends keyof FormData>(
+    const handleCheckboxField = <T extends keyof FormDataType>(
         e: React.ChangeEvent<HTMLInputElement>
     ) => {
         const fieldName = e.target.name as T;
