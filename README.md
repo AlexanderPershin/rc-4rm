@@ -99,12 +99,13 @@ return (
 
 #### `CustomForm`, currently supported only the following field types: text, email, password
 
-| prop         | type                                                                                                                                                                      | description                                                                          |
-| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| handleSubmit | (data) => void                                                                                                                                                            | callback function triggered on `onSubmit`, sends `data` object `{ email, password }` |
-| className    | string                                                                                                                                                                    | class added to bootstrap form classes                                                |
-| clearAfter   | boolean                                                                                                                                                                   | should form fields be set to empty string after promise resolved                     |
-| fields       | Array of CustomFormField objects { id: number; type: string; name: string; label: string; validator: (value: any) => boolean; placeholder?: string; required?: boolean; } | should form fields be set to empty string after promise resolved                     |
+| prop          | type                                                                                                                                                                      | description                                                                          |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| handleSubmit  | (data) => void                                                                                                                                                            | callback function triggered on `onSubmit`, sends `data` object `{ email, password }` |
+| className     | string                                                                                                                                                                    | class added to bootstrap form classes                                                |
+| clearAfter    | boolean                                                                                                                                                                   | should form fields be set to empty string after promise resolved                     |
+| fields        | Array of CustomFormField objects { id: number; type: string; name: string; label: string; validator: (value: any) => boolean; placeholder?: string; required?: boolean; } | should form fields be set to empty string after promise resolved                     |
+| requiredLabel | string                                                                                                                                                                    | String near field label signifying that field is required. Default is "\*"           |
 
 ### `CustomForm` usage
 
@@ -114,6 +115,7 @@ return (
     fields={CUSTOM_FORM_FIELDS_DATA}
     clearAfter={true}
     className="w-50"
+    requiredLabel=" (Required!)"
 />
 ```
 

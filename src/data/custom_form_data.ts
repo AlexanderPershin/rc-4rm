@@ -6,7 +6,7 @@ const CUSTOM_FORM_FIELDS_DATA: CustomFormItem[] = [
         type: "text",
         name: "username",
         label: "Username",
-        validator: (value: string) => value.length > 2,
+        // validator: (value: string) => value.length > 2,
         placeholder: "Fancy username",
         required: false,
     },

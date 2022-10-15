@@ -28,6 +28,7 @@ function App() {
                             fields={CUSTOM_FORM_FIELDS_DATA}
                             // clearAfter={true}
                             className="w-50"
+                            requiredLabel=" *"
                         />
                     </div>
                 ) : null}

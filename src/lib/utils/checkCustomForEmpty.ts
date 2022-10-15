@@ -2,13 +2,13 @@ const checkCustomForEmpty = (
     obj: any,
     fields: CustomFormItem[]
 ): CustomFormItem[] | any[] => {
+    /* checks if any of `required` fields are empty */
     try {
         return Object.entries(obj)
             .map((item: any) => {
                 const fieldItem = fields.find(
                     (itm: CustomFormItem) => itm.name === item[0]
                 );
-                console.log("fieldItem", fieldItem);
 
                 if (fieldItem?.required && !item[1]) return fieldItem;
                 return;

@@ -6,7 +6,7 @@ declare global {
         type: string;
         name: string;
         label: string;
-        validator: (value: any) => boolean;
+        validator?: (value: any) => boolean;
         placeholder?: string;
         required?: boolean;
     }

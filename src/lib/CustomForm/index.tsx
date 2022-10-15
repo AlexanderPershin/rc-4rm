@@ -10,6 +10,7 @@ interface CustomFormProps {
     handleSubmit: (data: any) => void;
     clearAfter?: boolean;
     className?: string;
+    requiredLabel?: string;
 }
 
 const CustomForm: FC<CustomFormProps> = ({
@@ -17,9 +18,11 @@ const CustomForm: FC<CustomFormProps> = ({
     handleSubmit,
     clearAfter = false,
     className,
+    requiredLabel = "*",
 }) => {
     const [formData, setFormData] = useState<any>(mapFieldsToData(fields));
     const [isLoading, setLoading] = useState<boolean>(false);
+    const [touchedFields, setTouchedFields] = useState<string[]>([]);
 
     type FormDataType = typeof formData;
     type FormDataTypes = keyof typeof formData;
@@ -39,12 +42,11 @@ const CustomForm: FC<CustomFormProps> = ({
     };
 
     const validateField = (item: CustomFormItem, value: any) => {
-        if (!value) {
-            removeFromErrors(item.name);
-            return;
-        }
-        // @ts-ignore
-        const isValid = item.validator(value);
+        // if (!value && !item.validator) {
+        //     removeFromErrors(item.name);
+        //     return;
+        // }
+        const isValid = item?.validator ? item.validator(value) : true;
         if (isValid) {
             removeFromErrors(item.name);
             return;
@@ -59,9 +61,9 @@ const CustomForm: FC<CustomFormProps> = ({
         e: React.ChangeEvent<HTMLInputElement>,
         item: CustomFormItem
     ) => {
-        console.log("handleFormField: name", e.target.name);
-
         const fieldName = e.target.name;
+        if (!touchedFields.includes(fieldName))
+            setTouchedFields([...touchedFields, fieldName]);
         const value = e.target.value;
         const newFormData = { ...formData, [fieldName]: value };
         validateField(item, value);
@@ -76,13 +78,13 @@ const CustomForm: FC<CustomFormProps> = ({
         console.log("errors", errors);
     }, [errors]);
 
+    useEffect(() => {
+        console.log("touchedFields", touchedFields);
+    }, [touchedFields]);
+
     const getValidationClasses = (fieldName: string) => {
-        // if (!formData[fieldName as FormDataTypes]) return "";
-        // const isValid: boolean = (!errors.includes(fieldName) &&
-        //     formData[fieldName as FormDataTypes]) as boolean;
-        // TODO: Check feedback and is-valid for empty
-        // Optionally add touchedFields object state
         const isValid = !errors.includes(fieldName);
+        if (!touchedFields.includes(fieldName)) return "";
         return isValid ? "is-valid" : "is-invalid";
     };
 
@@ -96,15 +98,22 @@ const CustomForm: FC<CustomFormProps> = ({
     const onFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        // TODO: check here fields with required: true
         const emptyFields = checkCustomForEmpty(formData, fields);
-        console.log("emptyFields", emptyFields);
         if (emptyFields?.length) {
-            emptyFields.forEach((item: CustomFormItem) => {
-                console.log(`adding ${item.name} to errors`);
+            try {
+                const emptyFieldsNames = emptyFields.map(
+                    (item: CustomFormItem) => item.name
+                );
+                setTouchedFields(emptyFieldsNames);
+                setErrors(emptyFieldsNames);
+                const firstEmpty: any = document.getElementsByName(
+                    emptyFields[0].name
+                )[0];
 
-                addToErrors(item.name);
-            });
+                firstEmpty?.focus();
+            } catch (error) {
+                console.log("error handleing empty fields onFormSubmit", error);
+            }
         }
 
         if (errors?.length || emptyFields?.length) {
@@ -125,6 +134,7 @@ const CustomForm: FC<CustomFormProps> = ({
             <div key={item.id} className="mb-3">
                 <label htmlFor="email" className="form-label">
                     {item.label}
+                    {item?.required ? requiredLabel : ""}
                 </label>
                 <input
                     type={item.type}
