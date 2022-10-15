@@ -74,13 +74,13 @@ const CustomForm: FC<CustomFormProps> = ({
     //     console.log("formData", formData);
     // }, [formData]);
 
-    useEffect(() => {
-        console.log("errors", errors);
-    }, [errors]);
+    // useEffect(() => {
+    //     console.log("errors", errors);
+    // }, [errors]);
 
-    useEffect(() => {
-        console.log("touchedFields", touchedFields);
-    }, [touchedFields]);
+    // useEffect(() => {
+    //     console.log("touchedFields", touchedFields);
+    // }, [touchedFields]);
 
     const getValidationClasses = (fieldName: string) => {
         const isValid = !errors.includes(fieldName);
@@ -117,9 +117,9 @@ const CustomForm: FC<CustomFormProps> = ({
         }
 
         if (errors?.length || emptyFields?.length) {
-            console.log(
-                `errors.length ${errors.length}; empty fields ${emptyFields?.length}`
-            );
+            // console.log(
+            //     `errors.length ${errors.length}; empty fields ${emptyFields?.length}`
+            // );
 
             return;
         } else {
