@@ -70,6 +70,11 @@ const SignForm: FC<SignProps> = ({
     const [isLoading, setLoading] = useState<boolean>(false);
 
     const [errors, setErrors] = useState<string[]>([]);
+    const [touchedFields, setTouchedFields] = useState<string[]>([]);
+
+    // useEffect(() => {
+    //     console.log("touchedFields", touchedFields);
+    // }, [touchedFields]);
 
     const addToErrors = (fieldName: FormDataTypes) => {
         const inErrors = errors.includes(fieldName);
@@ -118,10 +123,7 @@ const SignForm: FC<SignProps> = ({
         fieldName: T,
         value: FormDataType[T]
     ) => {
-        console.log("validating checkbox field");
-
         const isValid = formValidators[fieldName](value);
-        console.log("isValid", isValid);
 
         if (isValid) {
             removeFromErrors(fieldName);
@@ -137,6 +139,8 @@ const SignForm: FC<SignProps> = ({
         e: React.ChangeEvent<HTMLInputElement>
     ) => {
         const fieldName = e.target.name as T;
+        if (!touchedFields.includes(fieldName))
+            setTouchedFields([...touchedFields, fieldName]);
         const value = e.target.value as any;
         const newFormData = { ...formData, [fieldName]: value };
         validateField(fieldName, value);
@@ -147,6 +151,8 @@ const SignForm: FC<SignProps> = ({
         e: React.ChangeEvent<HTMLInputElement>
     ) => {
         const fieldName = e.target.name as T;
+        if (!touchedFields.includes(fieldName))
+            setTouchedFields([...touchedFields, fieldName]);
         const prevValue: boolean = formData[fieldName as "isCheckOut"];
         const newFormData = { ...formData, [fieldName]: !prevValue };
         validateCheckboxField(fieldName, !prevValue as any);
@@ -185,9 +191,9 @@ const SignForm: FC<SignProps> = ({
         if (isCheck) submitData.isCheckout = formData.isCheckOut;
 
         if (errors?.length || anyEmpty) {
-            console.log(
-                `errors.length ${errors.length}; empty fields ${anyEmpty}`
-            );
+            // console.log(
+            //     `errors.length ${errors.length}; empty fields ${anyEmpty}`
+            // );
 
             return;
         } else {
@@ -216,7 +222,7 @@ const SignForm: FC<SignProps> = ({
         fieldName: FormDataTypes,
         isCheckbox?: boolean
     ) => {
-        if (!formData[fieldName as FormDataTypes] && !isCheckbox) return "";
+        if (!touchedFields.includes(fieldName)) return "";
         let isValid: boolean = false;
         if (!isCheckbox) {
             isValid = (!errors.includes(fieldName) &&

@@ -3,8 +3,8 @@ import SignForm from "./lib/SignForm";
 import CustomForm from "./lib/CustomForm";
 import CUSTOM_FORM_FIELDS_DATA from "./data/custom_form_data";
 
-const SHOW_SIGN_FORM = false;
-const SHOW_CUSTOM_FORM = true;
+const SHOW_SIGN_FORM = true;
+const SHOW_CUSTOM_FORM = false;
 
 function App() {
     const handleSubmit = (data: any) => {
@@ -33,8 +33,10 @@ function App() {
                     </div>
                 ) : null}
                 {SHOW_SIGN_FORM ? (
-                    <div className="col-12 col-md-6">
+                    <div className="container-fluid d-flex flex-column gap-4 justify-content-center align-items-center">
+                        <h2 className="mt-5">SignForm component</h2>
                         <SignForm
+                            className="w-50"
                             handleSubmit={handleSubmit}
                             clearAfter={false}
                             isConfirmPass={true}
