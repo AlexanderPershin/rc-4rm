@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from "react";
+import React, { FC } from "react";
 import cn from "classnames";
 import Select from "react-select";
 import s from "./style.module.sass";

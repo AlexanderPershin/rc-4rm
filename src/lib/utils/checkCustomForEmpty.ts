@@ -11,6 +11,7 @@ const checkCustomForEmpty = (
                 );
 
                 if (fieldItem?.required && !item[1]) return fieldItem.name;
+                return null;
             })
             .filter((item) => item);
     } catch (error) {

@@ -17,9 +17,9 @@ const validateForm = (formData: any, fields: CustomFormItem[]) => {
                     : true;
 
                 if (fieldItem?.required && !isValid) return fieldItem.name;
+                return null;
             })
             .filter((item) => item);
-        console.log("invalidFieldsArr", invalidFieldsArr);
 
         const newErrors = Array.from(
             new Set([...emptyRequiredArr, ...invalidFieldsArr])

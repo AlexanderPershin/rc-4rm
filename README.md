@@ -98,7 +98,7 @@ return (
 </details>
 
 <br />
-#### `CustomForm`, currently supported only the following field types: text, email, password
+#### `CustomForm`, currently supported only the following field types: text, email, password, select
 
 | prop          | type              | description                                                                          |
 | ------------- | ----------------- | ------------------------------------------------------------------------------------ |
@@ -119,9 +119,18 @@ return (
 | validator?   | (value: InputValue) => boolean | function to check if input value is correct            |
 | placeholder? | string                         | input placeholder                                      |
 | required?    | boolean                        | determines if form can be submitted without this field |
+| multible?    | boolean                        | select input only, determines multiple options select  |
+| options?     | ReactSelectOption[]            | array of select options objects                        |
 
-`InputType = text | email | password | checkbox`
+`InputType = text | email | password | select`
 `InputValue`: `string` for text inputs, `boolean` for checkboxes etc.
+
+```ts
+interface RectSelectOption = {
+    label: string;
+    value: string;
+}
+```
 
 ### `CustomForm` usage
 
@@ -165,6 +174,29 @@ const CUSTOM_FORM_FIELDS_DATA: CustomFormItem[] = [
         label: "Enter password",
         validator: passwordValidator,
         required: true,
+    },
+    {
+        id: 4,
+        type: "select",
+        name: "languages",
+        label: "Your languages",
+        validator: (value: any[]) => value.length > 1,
+        required: true,
+        multiple: true,
+        options: [
+            {
+                value: "en",
+                label: "English",
+            },
+            {
+                value: "fr",
+                label: "French",
+            },
+            {
+                value: "es",
+                label: "Spanish",
+            },
+        ],
     },
 ];
 ```

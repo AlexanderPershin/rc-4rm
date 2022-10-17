@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import React, { FC, useState, useEffect } from "react";
+import React, { FC, useState } from "react";
 import checkForEmpty from "../utils/checkForEmpty";
 import { emailValidator, passwordValidator } from "../utils/validators";
 import cn from "classnames";

@@ -1,9 +1,7 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { FC, useState } from "react";
 import cn from "classnames";
 import s from "./style.module.sass";
 import mapFieldsToData from "../utils/mapFieldsToData";
-import checkForEmpty from "../utils/checkForEmpty";
-import checkCustomForEmpty from "../utils/checkCustomForEmpty";
 import TextInput from "./components/TextInput";
 import SelectInput from "./components/SelectInput";
 import validateForm from "../utils/validateForm";
@@ -27,7 +25,7 @@ const CustomForm: FC<CustomFormProps> = ({
     const [isLoading, setLoading] = useState<boolean>(false);
     const [touchedFields, setTouchedFields] = useState<string[]>([]);
 
-    type FormDataType = typeof formData;
+    // type FormDataType = typeof formData;
     type FormDataTypes = keyof typeof formData;
 
     const [errors, setErrors] = useState<string[]>([]);
@@ -75,17 +73,13 @@ const CustomForm: FC<CustomFormProps> = ({
             item.type === "select"
         )
             value = e.target.value;
-        // if (item.type === "select") {
-        //     const target = e.currentTarget as HTMLSelectElement;
-        //     // @ts-ignore
-        //     value = target.selectedOptions.map((itm: any) => itm.value);
-        // }
 
         const newFormData = { ...formData, [fieldName]: value };
         validateField(item, value);
         setFormData(newFormData);
     };
 
+    /*
     useEffect(() => {
         console.log("formData", formData);
     }, [formData]);
@@ -97,6 +91,7 @@ const CustomForm: FC<CustomFormProps> = ({
     useEffect(() => {
         console.log("touchedFields", touchedFields);
     }, [touchedFields]);
+    */
 
     const getValidationClasses = (fieldName: string) => {
         const isValid = !errors.includes(fieldName);
@@ -122,7 +117,6 @@ const CustomForm: FC<CustomFormProps> = ({
                     fields.map((item: CustomFormItem) => item.name)
                 );
 
-                console.log("newErrors", newErrors);
                 setErrors(newErrors);
 
                 // Focus on first invalid field
