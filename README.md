@@ -97,15 +97,31 @@ return (
 
 </details>
 
+<br />
 #### `CustomForm`, currently supported only the following field types: text, email, password
 
-| prop          | type                                                                                                                                                                      | description                                                                          |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| handleSubmit  | (data) => void                                                                                                                                                            | callback function triggered on `onSubmit`, sends `data` object `{ email, password }` |
-| className     | string                                                                                                                                                                    | class added to bootstrap form classes                                                |
-| clearAfter    | boolean                                                                                                                                                                   | should form fields be set to empty string after promise resolved                     |
-| fields        | Array of CustomFormField objects { id: number; type: string; name: string; label: string; validator: (value: any) => boolean; placeholder?: string; required?: boolean; } | should form fields be set to empty string after promise resolved                     |
-| requiredLabel | string                                                                                                                                                                    | String near field label signifying that field is required. Default is "\*"           |
+| prop          | type              | description                                                                          |
+| ------------- | ----------------- | ------------------------------------------------------------------------------------ |
+| handleSubmit  | (data) => void    | callback function triggered on `onSubmit`, sends `data` object `{ email, password }` |
+| className     | string            | class added to bootstrap form classes                                                |
+| clearAfter    | boolean           | should form fields be set to empty string after promise resolved                     |
+| fields        | CustomFormField[] | Array describing form fields (type desc below)                                       |
+| requiredLabel | string            | String near field label signifying that field is required. Default is "\*"           |
+
+#### `CustomFormField`
+
+| prop         | type                           | description                                            |
+| ------------ | ------------------------------ | ------------------------------------------------------ |
+| id           | number                         | unique id for a field                                  |
+| type         | InputType                      | html input type                                        |
+| name         | string                         | unique input type name                                 |
+| label        | string                         | input label                                            |
+| validator?   | (value: InputValue) => boolean | function to check if input value is correct            |
+| placeholder? | string                         | input placeholder                                      |
+| required?    | boolean                        | determines if form can be submitted without this field |
+
+`InputType = text | email | password | checkbox`
+`InputValue`: `string` for text inputs, `boolean` for checkboxes etc.
 
 ### `CustomForm` usage
 
@@ -118,6 +134,42 @@ return (
     requiredLabel=" (Required!)"
 />
 ```
+
+<details>
+<summary><code>CUSTOM_FORM_FIELDS_DATA</code> example</summary>
+
+```js
+const CUSTOM_FORM_FIELDS_DATA: CustomFormItem[] = [
+    {
+        id: 1,
+        type: "text",
+        name: "username",
+        label: "Username",
+        validator: (value: string) => value.length > 2,
+        placeholder: "Fancy username",
+        required: false,
+    },
+    {
+        id: 2,
+        type: "text",
+        name: "email",
+        label: "Email",
+        validator: emailValidator,
+        placeholder: "Your email",
+        required: true,
+    },
+    {
+        id: 3,
+        type: "password",
+        name: "password",
+        label: "Enter password",
+        validator: passwordValidator,
+        required: true,
+    },
+];
+```
+
+</details>
 
 ## LICENSE [MIT](https://github.com/AlexanderPershin/rc-4rm/blob/master/LICENCE.md)
 
