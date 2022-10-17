@@ -98,6 +98,7 @@ return (
 </details>
 
 <br />
+
 #### `CustomForm`, currently supported only the following field types: text, email, password, select
 
 | prop          | type              | description                                                                          |
