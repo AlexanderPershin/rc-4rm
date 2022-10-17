@@ -10,8 +10,7 @@ const checkCustomForEmpty = (
                     (itm: CustomFormItem) => itm.name === item[0]
                 );
 
-                if (fieldItem?.required && !item[1]) return fieldItem;
-                return;
+                if (fieldItem?.required && !item[1]) return fieldItem.name;
             })
             .filter((item) => item);
     } catch (error) {

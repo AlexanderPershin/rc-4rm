@@ -6,6 +6,7 @@ import checkForEmpty from "../utils/checkForEmpty";
 import checkCustomForEmpty from "../utils/checkCustomForEmpty";
 import TextInput from "./components/TextInput";
 import SelectInput from "./components/SelectInput";
+import validateForm from "../utils/validateForm";
 
 interface CustomFormProps {
     fields: CustomFormItem[];
@@ -113,35 +114,28 @@ const CustomForm: FC<CustomFormProps> = ({
     const onFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (errors.length) return;
-
-        const emptyFields = checkCustomForEmpty(formData, fields);
-        if (emptyFields?.length) {
+        const newErrors: string[] = validateForm(formData, fields);
+        if (newErrors?.length) {
             try {
-                const emptyFieldsNames = emptyFields.map(
-                    (item: CustomFormItem) => item.name
+                // Set all fields to touched
+                setTouchedFields(
+                    fields.map((item: CustomFormItem) => item.name)
                 );
-                setTouchedFields(emptyFieldsNames);
-                setErrors(emptyFieldsNames);
-                const firstEmpty: any = document.getElementsByName(
-                    emptyFields[0].name
+
+                console.log("newErrors", newErrors);
+                setErrors(newErrors);
+
+                // Focus on first invalid field
+                const firstInvalid: any = document.getElementsByName(
+                    newErrors[0]
                 )[0];
 
-                firstEmpty?.focus();
+                firstInvalid?.focus();
+                return;
             } catch (error) {
                 console.log("error handleing empty fields onFormSubmit", error);
             }
         }
-
-        // if (errors?.length || emptyFields?.length) {
-        //     // console.log(
-        //     //     `errors.length ${errors.length}; empty fields ${emptyFields?.length}`
-        //     // );
-
-        //     return;
-        // } else {
-        //     setErrors([]);
-        // }
 
         submitAsync(formData);
     };
