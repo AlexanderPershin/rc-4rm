@@ -3,8 +3,8 @@ import SignForm from "./lib/SignForm";
 import CustomForm from "./lib/CustomForm";
 import CUSTOM_FORM_FIELDS_DATA from "./data/custom_form_data";
 
-const SHOW_SIGN_FORM = true;
-const SHOW_CUSTOM_FORM = false;
+const SHOW_SIGN_FORM = false;
+const SHOW_CUSTOM_FORM = true;
 
 function App() {
     const handleSubmit = (data: any) => {

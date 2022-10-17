@@ -4,6 +4,8 @@ import s from "./style.module.sass";
 import mapFieldsToData from "../utils/mapFieldsToData";
 import checkForEmpty from "../utils/checkForEmpty";
 import checkCustomForEmpty from "../utils/checkCustomForEmpty";
+import TextInput from "./components/TextInput";
+import SelectInput from "./components/SelectInput";
 
 interface CustomFormProps {
     fields: CustomFormItem[];
@@ -58,29 +60,42 @@ const CustomForm: FC<CustomFormProps> = ({
     };
 
     const handleFormField = (
-        e: React.ChangeEvent<HTMLInputElement>,
+        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
         item: CustomFormItem
     ) => {
-        const fieldName = e.target.name;
+        const fieldName = item.name || e.target.name;
         if (!touchedFields.includes(fieldName))
             setTouchedFields([...touchedFields, fieldName]);
-        const value = e.target.value;
+        let value: any = e.target.value;
+        if (
+            item.type === "text" ||
+            item.type === "email" ||
+            item.type === "password" ||
+            item.type === "select"
+        )
+            value = e.target.value;
+        // if (item.type === "select") {
+        //     const target = e.currentTarget as HTMLSelectElement;
+        //     // @ts-ignore
+        //     value = target.selectedOptions.map((itm: any) => itm.value);
+        // }
+
         const newFormData = { ...formData, [fieldName]: value };
         validateField(item, value);
         setFormData(newFormData);
     };
 
-    // useEffect(() => {
-    //     console.log("formData", formData);
-    // }, [formData]);
+    useEffect(() => {
+        console.log("formData", formData);
+    }, [formData]);
 
-    // useEffect(() => {
-    //     console.log("errors", errors);
-    // }, [errors]);
+    useEffect(() => {
+        console.log("errors", errors);
+    }, [errors]);
 
-    // useEffect(() => {
-    //     console.log("touchedFields", touchedFields);
-    // }, [touchedFields]);
+    useEffect(() => {
+        console.log("touchedFields", touchedFields);
+    }, [touchedFields]);
 
     const getValidationClasses = (fieldName: string) => {
         const isValid = !errors.includes(fieldName);
@@ -97,6 +112,8 @@ const CustomForm: FC<CustomFormProps> = ({
 
     const onFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        if (errors.length) return;
 
         const emptyFields = checkCustomForEmpty(formData, fields);
         if (emptyFields?.length) {
@@ -116,41 +133,57 @@ const CustomForm: FC<CustomFormProps> = ({
             }
         }
 
-        if (errors?.length || emptyFields?.length) {
-            // console.log(
-            //     `errors.length ${errors.length}; empty fields ${emptyFields?.length}`
-            // );
+        // if (errors?.length || emptyFields?.length) {
+        //     // console.log(
+        //     //     `errors.length ${errors.length}; empty fields ${emptyFields?.length}`
+        //     // );
 
-            return;
-        } else {
-            setErrors([]);
-        }
+        //     return;
+        // } else {
+        //     setErrors([]);
+        // }
 
         submitAsync(formData);
     };
 
     const renderFormFields = (fieldsArray: CustomFormItem[]): JSX.Element[] => {
-        return fieldsArray.map((item: CustomFormItem) => (
-            <div key={item.id} className="mb-3">
-                <label htmlFor="email" className="form-label">
-                    {item.label}
-                    {item?.required ? requiredLabel : ""}
-                </label>
-                <input
-                    type={item.type}
-                    className={cn(
-                        "form-control",
-                        getValidationClasses(item.name)
-                    )}
-                    id={item.id.toString()}
-                    name={item.name}
-                    aria-describedby={`${item.name}Help`}
-                    value={formData[item.name]}
-                    onChange={(e) => handleFormField(e, item)}
-                    placeholder={item.placeholder || item.label}
-                />
-            </div>
-        ));
+        return fieldsArray.map((item: CustomFormItem) => {
+            switch (item.type) {
+                case "text" || "password" || "email":
+                    return (
+                        <TextInput
+                            key={item.id}
+                            item={item}
+                            formData={formData}
+                            handleFormField={handleFormField}
+                            getValidationClasses={getValidationClasses}
+                            requiredLabel={requiredLabel}
+                        />
+                    );
+                case "select":
+                    return (
+                        <SelectInput
+                            key={item.id}
+                            item={item}
+                            formData={formData}
+                            handleFormField={handleFormField}
+                            getValidationClasses={getValidationClasses}
+                            requiredLabel={requiredLabel}
+                        />
+                    );
+                default:
+                    return (
+                        <TextInput
+                            key={item.id}
+                            item={item}
+                            formData={formData}
+                            handleFormField={handleFormField}
+                            getValidationClasses={getValidationClasses}
+                            requiredLabel={requiredLabel}
+                        />
+                    );
+            }
+        });
     };
 
     return formData && fields ? (

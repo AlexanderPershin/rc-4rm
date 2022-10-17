@@ -1,0 +1,13 @@
+@import "~bootstrap/scss/functions"
+@import "~bootstrap/scss/variables"
+
+.Select
+    & > div[class$="-control"]
+        border-radius: $border-radius
+// TODO: Add bootstrap-like styling
+.Invalid
+    & > div[class$="-control"]
+        border: 1px solid $danger
+.Valid
+    & > div[class$="-control"]
+        border: 1px solid $success
